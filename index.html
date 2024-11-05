@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to the Game</title>
+    <!-- Link to the Google Fonts stylesheet for the Roboto font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Link to the favicon -->
+    <link rel="icon" href="file.png" type="image/x-icon" />
+    <style>
+      /* Basic styling for the body */
+      body {
+        font-family: "Roboto", sans-serif; /* Apply the Roboto font */
+        text-align: center; /* Center-align text */
+        padding: 50px; /* Add padding around the body */
+        background-color: #f3f3e0; /* Set background color */
+        color: #133e87; /* Set text color */
+      }
+      /* Styling for the container */
+      .container {
+        max-width: 600px; /* Set maximum width */
+        margin: 0 auto; /* Center the container */
+        background-color: #cbdceb; /* Set background color */
+        padding: 30px; /* Add padding inside the container */
+        border-radius: 25px; /* Add rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+        position: relative; /* Position relative for absolute positioning of the star */
+      }
+      /* Styling for the star image */
+      .star {
+        max-width: 250px; /* Set maximum width */
+        position: absolute; /* Position the star absolutely */
+        top: -120px; /* Position star above the container */
+        left: 50%; /* Center the star horizontally */
+        transform: translateX(-50%); /* Center the star horizontally */
+        animation: gradient-in 3s ease-in-out; /* Apply gradient animation */
+        z-index: 1; /* Ensure star is above the container */
+      }
+      /* Keyframes for the gradient-in animation */
+      @keyframes gradient-in {
+        0% {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      /* Styling for the logo */
+      .logo {
+        max-width: 100px; /* Set maximum width */
+        margin-bottom: 20px; /* Add margin below the logo */
+      }
+      /* Styling for the heading */
+      h1 {
+        font-size: 2.5em; /* Set font size */
+        margin-bottom: 20px; /* Add margin below the heading */
+        color: #133e87; /* Set text color */
+      }
+      /* Styling for the paragraph */
+      p {
+        font-size: 1.2em; /* Set font size */
+        margin-bottom: 30px; /* Add margin below the paragraph */
+        color: #133e87; /* Set text color */
+      }
+      /* Styling for the button */
+      button {
+        padding: 15px 30px; /* Add padding inside the button */
+        margin: 10px; /* Add margin around the button */
+        font-size: 18px; /* Set font size */
+        cursor: pointer; /* Change cursor to pointer on hover */
+        border: none; /* Remove border */
+        border-radius: 10px; /* Add rounded corners */
+        background-color: #608bc1; /* Set background color */
+        color: #fff; /* Set text color */
+        transition: background-color 0.3s ease; /* Add transition effect */
+      }
+      /* Styling for the button on hover */
+      button:hover {
+        background-color: #133e87; /* Change background color on hover */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Container for the main content -->
+    <div class="container">
+      <!-- Star image above the logo -->
+      <img src="star.png" alt="Star" class="star" />
+      <!-- Logo image -->
+      <img src="file.png" alt="Logo" class="logo" />
+      <!-- Main heading -->
+      <h1>Welcome to the Game</h1>
+      <!-- Introductory paragraph -->
+      <p>Select an option to start:</p>
+      <!-- Button to start the game -->
+      <button onclick="startGame()">Game Begin!</button>
+    </div>
+
+    <script>
+      // Function to start the game
+      function startGame() {
+        // Redirect to the Tic Tac Toe game page
+        window.location.href = "tictactoe.html";
+      }
+    </script>
+  </body>
+</html>

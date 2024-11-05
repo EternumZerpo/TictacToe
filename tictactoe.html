@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic Tac Toe with Q&A</title>
+    <link rel="icon" href="file.png" type="image/x-icon" />
+    <style>
+      /* Basic styling for the body */
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        font-family: "Arial", sans-serif;
+        background-color: #f3f3e0;
+        transition: background-color 0.3s;
+      }
+      /* Styling for the main container */
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #cbdceb;
+        padding: 30px;
+        border-radius: 25px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: relative;
+        text-align: center;
+      }
+      /* Styling for the header section */
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .star {
+        max-width: 100px;
+        margin-bottom: 10px;
+        animation: gradient-in 2s ease-in-out;
+      }
+      .logo {
+        max-width: 100px;
+      }
+      /* Animation for gradient effect */
+      @keyframes gradient-in {
+        0% {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      /* Styling for the Tic Tac Toe board */
+      #board {
+        display: grid;
+        grid-template-columns: repeat(3, 100px);
+        grid-template-rows: repeat(3, 100px);
+        gap: 5px;
+        margin-bottom: 20px;
+        justify-content: center;
+      }
+      /* Styling for each cell in the board */
+      .cell {
+        width: 100px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        border: 2px solid #133e87;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        border-radius: 15px;
+      }
+      /* Styling for cells marked with X */
+      .cell.X {
+        background-color: #ffcccc;
+      }
+      /* Styling for cells marked with O */
+      .cell.O {
+        background-color: #ccccff;
+      }
+      /* Styling for the question container */
+      #question-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #cbdceb;
+        padding: 20px;
+        border-radius: 25px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      #question {
+        margin-bottom: 10px;
+        font-size: 18px;
+        text-align: center;
+        color: #133e87;
+      }
+      #answer {
+        margin-bottom: 10px;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #133e87;
+        border-radius: 10px;
+        width: 100%;
+      }
+      #submit-answer {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #608bc1;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        transition: background-color 0.3s;
+      }
+      #submit-answer:hover {
+        background-color: #133e87;
+      }
+      #turn-indicator {
+        margin-bottom: 20px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #133e87;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <!-- Logo image -->
+        <img src="file.png" alt="Logo" class="logo" />
+        <!-- Star image above the logo -->
+        <img src="star.png" alt="Star" class="star" />
+      </div>
+      <!-- Turn indicator -->
+      <div id="turn-indicator">Player X's turn</div>
+      <!-- Tic Tac Toe board -->
+      <div id="board">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+      </div>
+      <!-- Question container -->
+      <div id="question-container">
+        <p id="question"></p>
+        <input type="text" id="answer" placeholder="Type your answer here" />
+        <button id="submit-answer">Submit Answer</button>
+      </div>
+    </div>
+
+    <script>
+      // Get references to DOM elements
+      const board = document.getElementById("board");
+      const cells = document.querySelectorAll(".cell");
+      const turnIndicator = document.getElementById("turn-indicator");
+      let currentPlayer = "X";
+      let stealChance = false;
+      let currentQuestion = null;
+      let currentCell = null;
+
+      // Define winning combinations for Tic Tac Toe
+      const winningCombinations = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+      ];
+
+      // Define questions for the Q&A part
+      const questions = [
+        {
+          question:
+            "A circle has a center at (3, -2) and a radius of 4 units. What is the equation of the circle?",
+          answer: "(x - 3)^2 + (y + 2)^2 = 16",
+          hint: "Remember the formula for a circle: (x - h)^2 + (y - k)^2 = r^2",
+        },
+        {
+          question:
+            "A circle has a center at the origin and a radius of 5 units. What is the equation of the circle?",
+          answer: "x^2 + y^2 = 25",
+          hint: "The center is at the origin, so h and k are zero.",
+        },
+        {
+          question:
+            "Identify the form: 4(y - 2) = (x - 4)^2. What is the vertex?",
+          answer: "Vertex: (4, 2)",
+          hint: "The vertex form of a parabola is 4p(y - k) = (x - h)^2.",
+        },
+        {
+          question: "Rearrange y^2 - 2y = 8x - 1. What is the vertex?",
+          answer: "Vertex: (0, 1)",
+          hint: "Complete the square for y to find the vertex.",
+        },
+        {
+          question:
+            "Identify the form: (y - 8)^2 = -4(x - 3). What is the vertex?",
+          answer: "Vertex: (3, 8)",
+          hint: "The vertex form of a parabola is (y - k)^2 = -4p(x - h).",
+        },
+        {
+          question:
+            "Identify the center: (x + 3)^2 + (y - 4)^2 = 36. What is the radius?",
+          answer: "Radius: 6",
+          hint: "The radius is the square root of the constant term.",
+        },
+        {
+          question:
+            "Rearrange x^2 + y^2 - 2x + 4y - 4 = 0. What is the center?",
+          answer: "Center: (1, -2)",
+          hint: "Complete the square for both x and y to find the center.",
+        },
+        {
+          question:
+            "Identify the center: x^2 + (y + 14)^2 = 75. What is the radius?",
+          answer: "Radius: 5sqrt(3)",
+          hint: "The radius is the square root of the constant term.",
+        },
+        {
+          question:
+            "Rearrange 2x^2 + 2y^2 + 14x + 10y + 24 = 0. What is the center?",
+          answer: "Center: (-3.5, -2.5)",
+          hint: "Complete the square for both x and y to find the center.",
+        },
+        {
+          question:
+            "Identify the center: (y + 8)^2 / 16 - (x - 1)^2 / 64 = 1. What are the vertices?",
+          answer: "Vertices: (1, -4) and (1, -12)",
+          hint: "Calculate the vertices using the values of a and b.",
+        },
+        {
+          question:
+            "Rearrange 9x^2 - 9y^2 + 15x + 21y - 20 = 0. What is the center?",
+          answer: "Center: (-5/6, 7/3)",
+          hint: "Complete the square for both x and y to find the center.",
+        },
+        {
+          question:
+            "Form of the Equation: The equation (x - 5)^2 = 28(y - 3) matches the form (x - h)^2 = 4p(y - k), indicating a vertical parabola. What is the vertex?",
+          answer: "Vertex: (5, 3)",
+          hint: "Compare the given equation with the standard form to find the vertex.",
+        },
+        {
+          question:
+            "Form of the Equation: The equation (y - 7)^2 = -8(x + 2) matches the form (y - k)^2 = 4p(x - h), which represents a horizontal parabola. What is the vertex?",
+          answer: "Vertex: (-2, 7)",
+          hint: "Compare the given equation with the standard form to find the vertex.",
+        },
+        {
+          question:
+            "Rewrite in Standard Form: Now the equation becomes (x - 2)^2 = -20(y). What is the vertex?",
+          answer: "Vertex: (2, 0)",
+          hint: "Rewrite the equation in standard form to find the vertex.",
+        },
+        {
+          question:
+            "Rewrite in Standard Form: Now the equation becomes (y + 6)^2 = 20(x - 4). What is the vertex?",
+          answer: "Vertex: (4, -6)",
+          hint: "Rewrite the equation in standard form to find the vertex.",
+        },
+      ];
+
+      // Handle cell click event
+      function handleClick(event) {
+        currentCell = event.target;
+        if (currentCell.textContent !== "") return;
+
+        // Select a random question
+        currentQuestion =
+          questions[Math.floor(Math.random() * questions.length)];
+        document.getElementById("question").textContent =
+          currentQuestion.question;
+        document.getElementById("answer").value = "";
+        document.getElementById("question-container").style.display = "block";
+      }
+
+      // Handle answer submission
+      document.getElementById("submit-answer").addEventListener("click", () => {
+        const userAnswer = document.getElementById("answer").value;
+        if (userAnswer === currentQuestion.answer) {
+          currentCell.textContent = currentPlayer;
+          currentCell.classList.add(currentPlayer);
+          if (checkWin(currentPlayer)) {
+            setTimeout(() => {
+              window.location.href = `congratulations.html?winner=${currentPlayer}`;
+            }, 100);
+          } else if (isDraw()) {
+            setTimeout(() => alert(`It's a draw!`), 100);
+            resetBoard();
+          } else {
+            currentPlayer = currentPlayer === "X" ? "O" : "X";
+            updateBoardColor();
+          }
+          stealChance = false;
+        } else {
+          if (stealChance) {
+            alert("Incorrect answer. No one gets the point.");
+            stealChance = false;
+            currentPlayer = currentPlayer === "X" ? "O" : "X";
+            updateBoardColor();
+          } else {
+            alert(
+              `Incorrect answer. ${
+                currentPlayer === "X" ? "O" : "X"
+              } gets a chance to steal! Hint: ${currentQuestion.hint}`
+            );
+            stealChance = true;
+          }
+        }
+        document.getElementById("question-container").style.display = "block";
+      });
+
+      // Check if the current player has won
+      function checkWin(player) {
+        return winningCombinations.some((combination) => {
+          return combination.every((index) => {
+            return cells[index].textContent === player;
+          });
+        });
+      }
+
+      // Check if the game is a draw
+      function isDraw() {
+        return [...cells].every((cell) => cell.textContent !== "");
+      }
+
+      // Reset the board for a new game
+      function resetBoard() {
+        cells.forEach((cell) => {
+          cell.textContent = "";
+          cell.classList.remove("X", "O");
+        });
+        currentPlayer = "X";
+        updateBoardColor();
+      }
+
+      // Update the background color and turn indicator based on the current player
+      function updateBoardColor() {
+        const body = document.body;
+        if (currentPlayer === "X") {
+          body.style.backgroundColor = "#ffcccc";
+          turnIndicator.textContent = "Player X's turn";
+        } else {
+          body.style.backgroundColor = "#ccccff";
+          turnIndicator.textContent = "Player O's turn";
+        }
+      }
+
+      // Add event listener to the board
+      board.addEventListener("click", handleClick);
+      updateBoardColor();
+    </script>
+  </body>
+</html>

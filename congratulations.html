@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Congratulations!</title>
+    <!-- Link to the favicon -->
+    <link rel="icon" href="file.png" type="image/x-icon" />
+    <style>
+      /* Basic styling for the body */
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        font-family: "Roboto", sans-serif;
+        background-color: #f3f3e0;
+        color: #133e87;
+      }
+      /* Styling for the container */
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #cbdceb;
+        padding: 30px;
+        border-radius: 25px; /* Increased border radius */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        position: relative;
+      }
+      /* Styling for the star image */
+      .star {
+        max-width: 200px;
+        position: absolute;
+        top: -90px;
+        left: 50%;
+        transform: translateX(-50%) scale(0.5);
+        animation: fade-in-scale 1.5s ease-out forwards;
+        z-index: 1;
+      }
+      /* Keyframes for the fade-in-scale animation */
+      @keyframes fade-in-scale {
+        0% {
+          opacity: 0;
+          transform: translateX(-50%) scale(0.5);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(-50%) scale(1);
+        }
+      }
+      /* Styling for the heading */
+      h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: #133e87;
+      }
+      /* Styling for the paragraph */
+      p {
+        font-size: 1.2em;
+        margin-bottom: 30px;
+        color: #133e87;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Container for the congratulatory message -->
+    <div class="container">
+      <!-- Star image above the heading -->
+      <img src="star.png" alt="Star" class="star" />
+      <!-- Main heading displaying the winner -->
+      <h1>Congratulations, <span id="winner"></span>!</h1>
+      <!-- Congratulatory message -->
+      <p>You won the game!</p>
+      <!-- Countdown message -->
+      <p id="countdown">Redirecting to the main page in 5 seconds...</p>
+    </div>
+
+    <script>
+      // Get the winner from the URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const winner = urlParams.get("winner");
+      // Display the winner's name in the span with id "winner"
+      document.getElementById("winner").textContent = winner;
+
+      // Initialize the countdown timer to 5 seconds
+      let countdown = 5;
+      const countdownElement = document.getElementById("countdown");
+
+      // Set an interval to update the countdown every second
+      const interval = setInterval(() => {
+        countdown--; // Decrease the countdown by 1
+        // Update the countdown text
+        countdownElement.textContent = `Redirecting to the main page in ${countdown} seconds...`;
+        // If the countdown reaches 0, clear the interval and redirect to the main page
+        if (countdown === 0) {
+          clearInterval(interval);
+          window.location.href = "index.html";
+        }
+      }, 1000); // Interval set to 1000 milliseconds (1 second)
+    </script>
+  </body>
+</html>
